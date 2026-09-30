@@ -1,0 +1,119 @@
+{
+  "case": "CASE-0001",
+  "reviewer": "Anushka",
+  "at": "2026-09-30T11:08:58.605Z",
+  "decisions": {
+    "SYN-0001#0": {
+      "action": "accept",
+      "note": "Pathogenic",
+      "text": "ClinVar classifies GENE1 c.123A>G (p.Lys41Arg) as Conflicting interpretations.",
+      "by": "Anushka",
+      "at": "2026-09-30T10:56:02.074Z"
+    },
+    "SYN-0001#3": {
+      "action": "accept",
+      "note": "Genetic",
+      "text": "2 literature item(s) discuss this variant.",
+      "by": "Anushka",
+      "at": "2026-09-30T10:56:25.408Z"
+    }
+  },
+  "audit": [
+    [
+      "rs80357906",
+      "ClinVar classifies BRCA1 c.5266dup (p.Gln1756fs) as Pathogenic.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs80357906",
+      "The variant is rare in the general population.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs80357906",
+      "It is predicted to cause a frameshift variant.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs80357906",
+      "1 literature item(s) discuss this variant.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs113993960",
+      "ClinVar classifies CFTR c.1521_1523del (p.Phe508del) as Pathogenic.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs113993960",
+      "The variant is low-frequency in the general population.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs113993960",
+      "It is predicted to cause a inframe deletion.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs113993960",
+      "1 literature item(s) discuss this variant.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs334",
+      "ClinVar classifies HBB c.20A>T (p.Glu7Val) as Pathogenic.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs334",
+      "The variant is low-frequency in the general population.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs334",
+      "It is predicted to cause a missense variant.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "rs334",
+      "1 literature item(s) discuss this variant.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "SYN-0001",
+      "ClinVar classifies GENE1 c.123A>G (p.Lys41Arg) as Conflicting interpretations.",
+      "Flagged",
+      "Accepted: Pathogenic"
+    ],
+    [
+      "SYN-0001",
+      "The variant is rare in the general population.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "SYN-0001",
+      "It is predicted to cause a missense variant.",
+      "Verified",
+      "Auto-verified"
+    ],
+    [
+      "SYN-0001",
+      "2 literature item(s) discuss this variant.",
+      "Flagged",
+      "Accepted: Genetic"
+    ]
+  ]
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Provenance: clinician review workspace</title>
+<style>
+:root{--bg:#f4f6f5;--surface:#fff;--ink:#12212b;--muted:#5a6a72;--line:#d5dcdc;--ok:#17724c;--okbg:#e2f3ea;--warn:#a85f00;--warnbg:#fdf0d8;--bad:#a12b3a;--badbg:#f9e1e4;--accent:#0d5c63;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a1e;--surface:#16242a;--ink:#e6eeee;--muted:#93a6ab;--line:#2a3d44;--ok:#5fd19a;--okbg:#153528;--warn:#f0b35a;--warnbg:#3a2b10;--bad:#f08a98;--badbg:#3e1a20;--accent:#6cc4cc}}
+:root[data-theme="dark"]{--bg:#0f1a1e;--surface:#16242a;--ink:#e6eeee;--muted:#93a6ab;--line:#2a3d44;--ok:#5fd19a;--okbg:#153528;--warn:#f0b35a;--warnbg:#3a2b10;--bad:#f08a98;--badbg:#3e1a20;--accent:#6cc4cc}
+@media print{:root:not([data-theme="none"]){--bg:#fff;--surface:#fff;--ink:#000;--muted:#444;--line:#999;--ok:#0a5;--warn:#a60;--bad:#a12}.noprint{display:none!important}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:Georgia,serif;margin:0 0 .4em;line-height:1.2}h1{font-size:1.7rem}h2{font-size:1.25rem}h3{font-size:1.05rem}
+.wrap{max-width:1180px;margin:0 auto;padding:20px}.muted,.reason{color:var(--muted)}.reason{font-size:.9rem}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+input,textarea{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px;width:100%}
+textarea{min-height:64px;font-size:.95rem}#vcf{min-height:120px;font:13px/1.5 ui-monospace,Menlo,monospace}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 13px}
+button.go{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}button:disabled{opacity:.5;cursor:not-allowed}
+button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);font-weight:600}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}.row>label{flex:1;min-width:180px}
+.top{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+.side{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px}
+.side h3{margin:12px 0 6px;font-size:.95rem;color:var(--muted)}.side h3:first-child{margin-top:0}
+.qi{display:block;width:100%;text-align:left;margin:4px 0;border-left:4px solid var(--line)}
+.qi.p0{border-left-color:var(--warn)}.qi.p1{border-left-color:var(--accent)}.qi.p2{border-left-color:var(--ok)}
+.main{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+.claim{border-left:4px solid var(--line);padding:8px 12px;margin:14px 0;background:var(--bg);border-radius:0 6px 6px 0}
+.claim.verified{border-left-color:var(--ok)}.claim.review{border-left-color:var(--warn)}.claim.rejected{border-left-color:var(--bad)}
+.ct{margin:0 0 2px}.pill{display:inline-block;font-size:.76rem;font-weight:600;padding:2px 9px;border-radius:99px;margin-right:6px}
+.pill.verified{background:var(--okbg);color:var(--ok)}.pill.review{background:var(--warnbg);color:var(--warn)}.pill.rejected{background:var(--badbg);color:var(--bad)}
+.srcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin:8px 0}
+.src{border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--surface);font-size:.92rem}.src b{display:block}
+.dec{border-top:1px solid var(--line);margin-top:10px;padding-top:10px}.made{font-weight:600;color:var(--ok)}.err{color:var(--bad);font-size:.9rem;min-height:1.2em}
+.bar{position:sticky;bottom:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.log{font:12px/1.5 ui-monospace,Menlo,monospace;color:var(--muted);margin-top:8px}
+#report{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:28px}
+.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.small{font-size:.85rem}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="noprint" id="work">
+<div class="top">
+<h1>Provenance: clinician review</h1>
+<p class="muted" style="margin:0 0 10px">Load a case, then review the queue. Flagged claims need your decision before the report can be signed off.</p>
+<div class="row"><label>Case ID<input id="case" value="CASE-0001"></label><label>Reviewer name<input id="rev" placeholder="Dr. Full Name"></label></div>
+<label for="vcf"><b>Annotated VCF</b></label><textarea id="vcf" spellcheck="false"></textarea>
+<div class="row"><button class="go" id="run">Analyze case</button><button id="reset">Load sample VCF</button>
+<label style="flex:none"><input type="checkbox" id="bad" style="width:auto"> Simulate over-confident writer</label>
+<label style="flex:none"><input type="checkbox" id="live" style="width:auto"> Live databases (backend only)</label></div>
+<div class="log" id="log" aria-live="polite"></div>
+</div>
+<div id="ws" hidden><div class="grid"><div class="side" id="queue"></div><div class="main" id="detail"></div></div>
+<div class="bar"><span id="prog"></span><button class="go" id="sign" disabled>Sign off and generate report</button></div></div>
+</div>
+<div id="rep" hidden></div>
+</div>
+<script>
+const SAMPLE="##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\n17\t43093010\trs80357906\tC\tCC\n7\t117559590\trs113993960\tATCT\tA\n11\t5227002\trs334\tT\tA\n1\t100000\tSYN-0001\tA\tG\n2\t555555\trs0000000\tG\tT\n";
+const DB={"rs80357906":{gene:"BRCA1",hgvs:"c.5266dup (p.Gln1756fs)",sig:"Pathogenic",review:"reviewed by expert panel",conflict:false,af:0.0001,csq:"frameshift_variant",impact:"HIGH",lit:[["Literature","Recurrent founder variant reported in breast and ovarian cancer families."]]},
+"rs113993960":{gene:"CFTR",hgvs:"c.1521_1523del (p.Phe508del)",sig:"Pathogenic",review:"reviewed by expert panel",conflict:false,af:0.007,csq:"inframe_deletion",impact:"MODERATE",lit:[["Literature","Most common cystic fibrosis-causing variant in people of European ancestry."]]},
+"rs334":{gene:"HBB",hgvs:"c.20A>T (p.Glu7Val)",sig:"Pathogenic",review:"reviewed by expert panel",conflict:false,af:0.005,csq:"missense_variant",impact:"MODERATE",lit:[["Literature","Causes sickle cell disease when inherited from both parents."]]},
+"SYN-0001":{gene:"GENE1",hgvs:"c.123A>G (p.Lys41Arg)",sig:"Conflicting interpretations",review:"2 submitters disagree",conflict:true,af:0.0004,csq:"missense_variant",impact:"MODERATE",litConflict:true,lit:[["Study A (synthetic)","Assay shows loss of protein function."],["Study B (synthetic)","Assay shows no functional change."]]}};
+const cat=a=>a<.001?"rare":a<.01?"low-frequency":"common";
+const $=id=>document.getElementById(id);
+const LINKS=id=>[["ClinVar","https://www.ncbi.nlm.nih.gov/clinvar/?term="+id],["dbSNP","https://www.ncbi.nlm.nih.gov/snp/"+id],["gnomAD","https://gnomad.broadinstitute.org/variant/"+id+"?dataset=gnomad_r4"],["Ensembl","https://www.ensembl.org/Homo_sapiens/Variation/Explore?v="+id],["PubMed","https://pubmed.ncbi.nlm.nih.gov/?term="+id],["Europe PMC","https://europepmc.org/search?query="+id]];
+function link(t,u){const a=el("a",null,t);a.href=u;a.target="_blank";a.rel="noopener noreferrer";return a}
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+// ---- In-browser engine (used when no backend is reachable) ----
+function localAnalyze(vcf,bad){
+  const D={log:[],variants:[],rejected:[],mode:"browser snapshot"};
+  vcf.split(/\r?\n/).filter(l=>l.trim()&&l[0]!=="#").forEach(l=>{
+    const f=l.trim().split(/\s+/);if(f.length<3)return;const r=DB[f[2]],v={id:f[2],chr:f[0],pos:f[1],found:!!r,claims:[]};D.variants.push(v);
+    if(!r){D.log.push("[Research] "+v.id+": no evidence found, no claims written");return}
+    Object.assign(v,{gene:r.gene,hgvs:r.hgvs,impact:r.impact,sig:r.sig});
+    const cl=[["sig",r.sig,"ClinVar classifies "+r.gene+" "+r.hgvs+" as "+r.sig+".",["clinvar"]],["af",cat(r.af),"The variant is "+cat(r.af)+" in the general population.",["freq"]],["csq",r.csq,"It is predicted to cause a "+r.csq.replace(/_/g," ")+".",["vep"]],["lit",r.lit.length,r.lit.length+" literature item(s) discuss this variant.",["lit"]]];
+    if(bad){cl.push(["sig","Benign",r.gene+" "+r.hgvs+" is benign.",["clinvar"]]);cl.push([null,null,"Carriers should start targeted therapy immediately.",[]])}
+    const L=v.id.startsWith("rs")?LINKS(v.id):[],U=i=>L[i]?L[i][1]:null;const src=k=>k==="clinvar"?[{label:"ClinVar",text:r.sig+" ("+r.review+").",url:U(0)}]:k==="freq"?[{label:"Population frequency",text:"Approx. allele frequency "+r.af+".",url:U(2)}]:k==="vep"?[{label:"Ensembl VEP",text:r.csq+", impact "+r.impact+".",url:U(3)}]:r.lit.map(n=>({label:n[0],text:n[1],url:U(5)}));
+    cl.forEach(([f,val,text,cites])=>{let s,why;const act={sig:r.sig,af:cat(r.af),csq:r.csq,lit:r.lit.length}[f];
+      if(!cites.length){s="rejected";why="No citation. Every claim must link to a source."}
+      else if(String(act)!==String(val)){s="rejected";why="Cited source says \""+act+"\", not \""+val+"\"."}
+      else if(cites[0]==="clinvar"&&r.conflict){s="review";why="ClinVar submitters disagree. A human reviewer should decide."}
+      else if(cites[0]==="lit"&&r.litConflict){s="review";why="Studies disagree on functional effect. Both shown."}
+      else{s="verified";why="Matches the cited source."}
+      const e={text,status:s,why,cites:cites.flatMap(src)};(s==="rejected"?D.rejected.push({...e,gene:r.gene}):v.claims.push(e))});
+    D.log.push("[Research > Synthesis > Verify] "+v.id+" done")});
+  return D}
+async function analyze(vcf,bad,live){
+  try{const r=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({vcf,simulate_bad:bad,live})});
+    if(!r.ok)throw 0;const d=await r.json();d.log=d.log.map(x=>x[1]);d.mode="backend";return d}
+  catch(e){return localAnalyze(vcf,bad)}}
+// ---- State ----
+let D=null,dec={},sel=0;
+const LBLS={verified:"Verified",review:"Needs review",rejected:"Removed"},LBLD={accept:"Accepted",edit:"Edited",reject:"Rejected",escalate:"Escalated"};
+const prio=v=>!v.found?3:v.claims.some(c=>c.status==="review")?0:(v.impact==="HIGH"||/^pathogenic/i.test(v.sig||""))?1:2;
+const GROUPS=["Needs your decision","High impact, auto-verified","Auto-verified","No evidence found"];
+const key=(v,i)=>v.id+"#"+i;
+const flagged=()=>D.variants.flatMap(v=>v.claims.map((c,i)=>c.status==="review"?key(v,i):null).filter(Boolean));
+async function run(){
+  const b=$("run");b.disabled=true;$("log").textContent="Running agents...";
+  D=await analyze($("vcf").value,$("bad").checked,$("live").checked);dec={};sel=0;
+  D.order=D.variants.map((v,i)=>i).sort((a,b)=>prio(D.variants[a])-prio(D.variants[b])||a-b);sel=D.order[0]??0;
+  $("log").textContent="Engine: "+D.mode+". "+D.log.join(" | ");$("ws").hidden=!D.variants.length;b.disabled=false;render()}
+function render(){
+  if(!D)return;const q=$("queue");q.textContent="";
+  GROUPS.forEach((g,gi)=>{const items=D.order.filter(i=>prio(D.variants[i])===gi);if(!items.length)return;q.append(el("h3",null,g));
+    items.forEach(i=>{const v=D.variants[i],n=v.claims.filter(c=>c.status==="review"),open=n.filter(c=>!dec[key(v,v.claims.indexOf(c))]).length;
+      const b=el("button","qi p"+gi,(v.found?v.gene+" ":"")+v.id+(gi===0?" ("+(open?open+" open":"decided")+")":""));b.setAttribute("aria-pressed",i===sel);b.onclick=()=>{sel=i;render()};q.append(b)})});
+  if(D.rejected.length){const dt=el("details");dt.append(el("summary",null,"Removed by verifier ("+D.rejected.length+")"));D.rejected.forEach(x=>dt.append(el("p","reason small",x.gene+": "+x.text+" ["+x.why+"]")));q.append(dt)}
+  const v=D.variants[sel],m=$("detail");m.textContent="";if(!v)return;
+  m.append(el("h2",null,v.found?[v.gene,v.hgvs].filter(Boolean).join(" "):v.id),el("p","reason",v.id+" · chr"+v.chr+":"+v.pos));
+  if(/^rs\d+$/.test(v.id)){const lk=el("p","reason small");lk.append("Check it yourself: ");LINKS(v.id).forEach(([l,u],i)=>lk.append(i?" · ":"",link(l,u)));m.append(lk)}
+  if(!v.found)m.append(el("p",null,"No evidence found for this variant. No claims were written. Consider manual lookup."));
+  v.claims.forEach((c,i)=>m.append(card(v,c,i)));
+  const all=flagged(),done=all.filter(k=>dec[k]).length;
+  $("prog").textContent=done+" of "+all.length+" flagged claims decided";$("sign").disabled=done<all.length}
+function card(v,c,i){
+  const k=key(v,i),d=el("div","claim "+c.status),p=el("p","ct");p.append(el("span","pill "+c.status,LBLS[c.status]),c.text);d.append(p,el("div","reason",c.why));
+  const g=el("div","srcgrid");c.cites.forEach(s=>{const b=el("div","src");b.append(el("b",null,s.label),el("span",null,s.text));
+    if(s.url)b.append(el("br"),link("Open source",s.url));else b.append(el("div","reason small","No public link (synthetic demo data)."));
+    if(s.detail){const dt=el("details");dt.append(el("summary",null,"Read abstract"),el("p","small",s.detail));b.append(dt)}g.append(b)});
+  if(c.status==="review"){d.append(g,decUI(k,c))}else if(c.cites.length){const dt=el("details");dt.append(el("summary",null,"Sources"),g);d.append(dt)}
+  return d}
+function decUI(k,c){
+  const w=el("div","dec"),x=dec[k];
+  if(x&&!x.editing){w.append(el("div","made",LBLD[x.action]+" by "+x.by+" at "+x.at.slice(0,16).replace("T"," ")),el("div","reason","Note: "+x.note+(x.action==="edit"?" | New wording: "+x.text:"")));
+    const b=el("button",null,"Change decision");b.onclick=()=>{delete dec[k];render()};w.append(b);return w}
+  let act=null;const row=el("div","row"),ed=el("input"),note=el("textarea"),err=el("div","err"),save=el("button","go","Save decision");
+  const bs=[["accept","Accept"],["edit","Edit wording"],["reject","Reject"],["escalate","Escalate"]].map(([a,l])=>{const b=el("button",null,l);b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{act=a;bs.forEach(y=>y.setAttribute("aria-pressed",y===b));ed.hidden=a!=="edit"};return b});
+  row.append(...bs);ed.value=c.text;ed.hidden=true;ed.setAttribute("aria-label","Edited wording");note.placeholder="Reason for your decision (required)";note.setAttribute("aria-label","Decision note");
+  save.onclick=()=>{if(!act||!note.value.trim()||(act==="edit"&&!ed.value.trim())){err.textContent="Choose an action and add a note.";return}
+    dec[k]={action:act,note:note.value.trim(),text:act==="edit"?ed.value.trim():c.text,by:$("rev").value.trim()||"Reviewer",at:new Date().toISOString()};render()};
+  w.append(row,ed,note,err,save);return w}
+// ---- Report ----
+function tbl(head,rows){const t=el("table"),h=el("tr");head.forEach(x=>h.append(el("th",null,x)));t.append(h);rows.forEach(r=>{const tr=el("tr");r.forEach(x=>tr.append(el("td",null,x)));t.append(tr)});const s=el("div","scroll");s.append(t);return s}
+async function signoff(){
+  const by=$("rev").value.trim();if(!by){$("rev").focus();alert("Enter the reviewer name before signing off.");return}
+  const r=$("rep"),at=new Date().toISOString();r.textContent="";
+  const btns=el("div","row noprint"),back=el("button",null,"Back to review"),pr=el("button","go","Print / save as PDF"),cp=el("button",null,"Copy text");
+  back.onclick=()=>{r.hidden=true;$("work").hidden=false};pr.onclick=()=>{try{window.print()}catch(e){}};
+  cp.onclick=async()=>{try{await navigator.clipboard.writeText($("body").innerText);cp.textContent="Copied"}catch(e){cp.textContent="Copy failed"}};btns.append(back,pr,cp);
+  const b=el("div");b.id="body";b.append(el("h1",null,"Variant interpretation report (draft for clinical use after review)"),
+    el("p","reason","Case "+$("case").value+" · Reviewed by "+by+" · Signed off "+at.slice(0,16).replace("T"," ")+" UTC · Engine: "+D.mode));
+  const open=[],audit=[],st={v:0,r:0,x:0};
+  b.append(el("h2",null,"Findings"));
+  D.variants.forEach(v=>{const h=el("h3",null,v.found?[v.gene,v.hgvs].filter(Boolean).join(" ")+" ("+v.id+")":v.id+" (no evidence found)");b.append(h);
+    if(!v.found){b.append(el("p",null,"No evidence found. No statements made. Manual lookup recommended."));return}
+    const ul=el("ul");
+    v.claims.forEach((c,i)=>{const d=dec[key(v,i)];let txt=c.text,tag="";
+      if(c.status==="review"){if(d.action==="reject"){st.x++;audit.push([v.id,c.text,"Flagged",LBLD[d.action]+": "+d.note]);return}
+        if(d.action==="edit")txt=d.text;if(d.action==="escalate")open.push(v.id+": "+c.text+" ("+d.note+")");tag=d.action==="escalate"?" [ESCALATED, unresolved]":" [reviewed]";st.r++}
+      else st.v++;
+      audit.push([v.id,c.text,c.status==="review"?"Flagged":"Verified",c.status==="review"?LBLD[d.action]+": "+d.note:"Auto-verified"]);
+      const li=el("li",null,txt+tag);li.append(el("div","reason small","Sources: "+c.cites.map(s=>s.label+" - "+s.text+(s.url?" <"+s.url+">":"")).join(" | ")));ul.append(li)});
+    b.append(ul)});
+  b.append(el("h2",null,"Uncertainty and open questions"));
+  const flags=D.variants.flatMap(v=>v.claims.map((c,i)=>c.status==="review"?v.id+": "+c.why+" Reviewer: "+dec[key(v,i)].note:null).filter(Boolean));
+  if(flags.length){const ul=el("ul");flags.forEach(f=>ul.append(el("li",null,f)));b.append(ul)}else b.append(el("p",null,"None flagged."));
+  if(open.length)b.append(el("p",null,"Escalated and unresolved: "+open.join("; ")));
+  b.append(el("h2",null,"Summary"),tbl(["Variants","Auto-verified","Reviewed and kept","Rejected by reviewer","Removed by verifier"],[[D.variants.length,st.v,st.r,st.x,D.rejected.length]]));
+  D.rejected.forEach(x=>audit.push([x.gene,x.text,"Removed by verifier",x.why]));
+  b.append(el("h2",null,"Audit trail"),tbl(["Variant","Claim","Verifier","Decision"],audit));
+  b.append(el("p","reason small","Generated by an AI-assisted research tool. \"Verified\" means a claim matches the source it cites, not that the source is correct or complete. Research use; not a substitute for clinical judgment."));
+  r.append(btns,b);$("work").hidden=true;r.hidden=false;window.scrollTo(0,0);
+  try{await fetch("/api/signoff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({audit:{case:$("case").value,reviewer:by,at,decisions:dec,audit}})})}catch(e){}}
+$("run").onclick=run;$("reset").onclick=()=>$("vcf").value=SAMPLE;$("sign").onclick=signoff;$("vcf").value=SAMPLE;
+</script>
+</body>
+</html>
